@@ -29,7 +29,7 @@ export function initalize(): void {
     }
 }
 
-export function saveData(server: ServerObject, path = "./data.json") {
+export function saveData(server: ServerObject, path = process.env.JSON_PATH) {
     const store: RawStore = JSON.parse(fs.readFileSync(path, "utf8"));
     fs.writeFileSync(
         path,
@@ -48,15 +48,15 @@ interface RawStore {
     data: { [id: string]: ServerObject };
 }
 
-function loadDataFromJson(path = "./data.json"): RawStore {
+function loadDataFromJson(path = process.env.JSON_PATH): RawStore {
     return JSON.parse(fs.readFileSync(path, "utf8"));
 }
 
-function jsonExist(path = "./data.json"): boolean {
+function jsonExist(path = process.env.JSON_PATH): boolean {
     return fs.existsSync(path);
 }
 
-function createJson(path = "./data.json"): void {
+function createJson(path = process.env.JSON_PATH): void {
     fs.writeFileSync(path, JSON.stringify({ data: {} }));
 }
 
