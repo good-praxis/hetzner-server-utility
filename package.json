@@ -1,0 +1,21 @@
+{
+  "name": "hetzner-server-utility",
+  "version": "1.0.0",
+  "description": "A simple server manager with discord bot implementation to create and destory servers on-demand (e.g. minecraft servers)",
+  "main": "dist/index.js",
+  "repository": "git@github.com:good-praxis/hetzner-server-utility.git",
+  "author": "Praxis <hello@vulpinecat.com>",
+  "license": "MIT",
+  "private": true,
+  "devDependencies": {
+    "@types/node": "^16.3.2",
+    "nodemon": "^2.0.12",
+    "ts-node": "^10.1.0",
+    "typescript": "^4.3.5"
+  },
+  "scripts": {
+    "dev": "nodemon --watch 'src/**/*.ts' --exec 'ts-node' src/index.ts",
+    "build": "tsc",
+    "start": "node dist/index.js"
+  }
+}
