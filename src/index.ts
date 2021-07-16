@@ -1,12 +1,8 @@
-import { initalize, loadById } from './modules/schema';
+import { initalize } from './modules/schema';
+import { initalizeApi } from './modules/hcloud';
 
 require('dotenv').config();
 initalize();
-const server = loadById('1');
-if (server.server.state === undefined) {
-  // Contact Hetzner API here
-
-  console.log(server);
-}
+initalizeApi();
 
 console.log('loaded without errors');
