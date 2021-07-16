@@ -2,3 +2,4 @@ dist/
 node_modules/
 data.json
 .env
+yarn-error.log
