@@ -36,12 +36,18 @@ export function saveData(server: ServerObject, path = process.env.JSON_PATH) {
   const store: RawStore = JSON.parse(fs.readFileSync(path, 'utf8'));
   fs.writeFileSync(
     path,
-    JSON.stringify({ data: { ...store.data, [server.id]: server } })
+    JSON.stringify({ data: { ...store.data, [server.name]: server } })
   );
 }
 
-export function loadById(id: number): ServerObject | undefined {
-  const server = loadDataFromJson().data[id];
+export function setToLive(name: string): void {
+  const server = loadByName(name);
+  server.server.state = ServerState.LIVE;
+  saveData(server);
+}
+
+export function loadByName(name: string): ServerObject | undefined {
+  const server = loadDataFromJson().data[name];
   return server;
 }
 
@@ -50,23 +56,26 @@ export async function createNewServer(name: string, props?: ServerProps) {
     type: props?.type || process.env.DEFAULT_SERVER_TYPE,
     location: props?.location || process.env.DEFAULT_SERVER_LOCATION
   };
-  const server = await hcloudNewServer(name, newServerProps);
+  const { server } = await hcloudNewServer(name, newServerProps);
 
-  return <ServerObject>{
+  const serverObject = <ServerObject>{
     version: process.env.CURRENT_VERSION,
     id: getNewId(),
     name,
     server: {
-      id: server.server.id,
+      id: server.id,
       props: {
         location: newServerProps.location,
         type: newServerProps.type
       },
-      ip: server.server.publicNet.ipv4.ip,
+      ip: server.publicNet.ipv4.ip,
       state: ServerState.CREATED
     },
     backup: undefined
   };
+
+  saveData(serverObject);
+  return serverObject;
 }
 
 interface RawStore {

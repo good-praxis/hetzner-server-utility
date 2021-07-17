@@ -1,8 +1,8 @@
-import { ServerObject, ServerProps } from './schema';
+import { ServerObject, ServerProps } from './server';
 
 const HetznerCloud = require('hcloud-js');
 
-let client: any;
+export let client: any;
 
 export function initalizeApi() {
   client = new HetznerCloud.Client({
@@ -29,4 +29,8 @@ export async function createSnapshotFromServer(server: ServerObject) {
   const snapshot = await remote_server.createImage('snapshot');
   server['backup'] = snapshot.image.id;
   return server;
+}
+
+export async function getSnapshotStatus(server: ServerObject): Promise<string> {
+  return client.images.get(server.backup).then((image: any) => image.status);
 }
