@@ -6,9 +6,11 @@ import {
   ServerState
 } from './modules/server';
 import { initalizeApi } from './modules/hcloud';
+import { initalizeKeys } from './modules/keymanager';
 const Discord = require('discord.js');
 require('dotenv').config();
 
+initalizeKeys();
 initalize();
 initalizeApi();
 
