@@ -1,18 +1,8 @@
-import {
-  createNewServer,
-  loadByName,
-  initalize,
-  setToLive,
-  ServerState
-} from './modules/server';
-import { initalizeApi } from './modules/hcloud';
-import { initalizeKeys } from './modules/keymanager';
+import { initalizeKeys, keys } from './modules/keymanager';
 const Discord = require('discord.js');
 require('dotenv').config();
 
 initalizeKeys();
-initalize();
-initalizeApi();
 
 const discord = new Discord.Client();
 
@@ -33,20 +23,7 @@ discord.on('message', (message: any) => {
     }
     const name = args[0]; // Prevent white space in name
 
-    if (loadByName(name)) {
-      message.channel.send(`A server with the name "${name}" already exists`);
-      return;
-    }
-
-    createNewServer(name)
-      .then(({ server }) => {
-        message.channel.send(
-          `${name}-Server has been initalized at ${server.ip}!`
-        );
-      })
-      .catch(console.error);
-
-    message.channel.send(`Creation in process...`);
+    throw new Error('Server creation not implemented');
   }
 
   if (command === 'ready') {
@@ -56,19 +33,7 @@ discord.on('message', (message: any) => {
     }
     const name = args[0]; // Prevent white space in name
 
-    if (!loadByName(name)) {
-      message.channel.send(`No server with the name "${name}" found`);
-      return;
-    }
-
-    if (loadByName(name).server.state !== ServerState.CREATED) {
-      message.channel.send(`Cannot set server "${name}" to Live`);
-      return;
-    }
-
-    setToLive(name);
-    message.channel.send(`${name}-Server is now live!`);
-    return;
+    throw new Error('Server processing not implemented');
   }
 });
 
@@ -81,5 +46,3 @@ discord.login(process.env.DISCORD_TOKEN);
 client.images.get(43077996).then((image: any) => {
   console.log(image);
 });*/
-
-console.log('loaded without errors');

@@ -9,6 +9,7 @@
   "private": true,
   "devDependencies": {
     "@types/node": "^16.3.2",
+    "@types/sshpk": "^1.10.6",
     "nodemon": "^2.0.12",
     "prettier": "^2.3.2",
     "ts-node": "^10.1.0",
@@ -20,9 +21,10 @@
     "start": "node dist/index.js"
   },
   "dependencies": {
+    "axios": "^0.21.1",
     "crypto": "^1.0.1",
     "discord.js": "^12.5.3",
     "dotenv": "^10.0.0",
-    "hcloud-js": "^1.4.1"
+    "sshpk": "^1.16.1"
   }
 }
