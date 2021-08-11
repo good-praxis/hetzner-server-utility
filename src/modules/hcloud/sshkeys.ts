@@ -69,7 +69,7 @@ export async function createKey(request_data: SSHKeysRequest) {
  * When no name is given, the App's key is returned.
  **/
 export async function getKeyByName(name: string = process.env.APP_NAME) {
-  const { status, data }: AxiosResponse<SSHKey> = await instance()
+  const { status, data }: AxiosResponse<SSHKeysResponse> = await instance()
     .get(`/ssh_keys?name=${name}`)
     .catch((err) => {
       if (err.response.status === 404) {
@@ -79,7 +79,7 @@ export async function getKeyByName(name: string = process.env.APP_NAME) {
       throw err;
     });
   if (status === 200) {
-    return data;
+    return data.ssh_keys[0];
   }
 
   throw new Error(`${status}: ${data}`);

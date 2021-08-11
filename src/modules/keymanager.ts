@@ -1,11 +1,20 @@
 import fs from 'fs';
 import { generateRSAKeyPair } from './rsa';
 import { createFolderIfNotExists } from '../utils/fs';
+import { updateKey } from './hcloud/sshkeys';
 
 export const keys: { priv: string; pub: string } = {
   priv: undefined,
   pub: undefined
 };
+
+export function onKeysReady(cb: Function, args?: any) {
+  if (keys.priv && keys.pub) {
+    cb(args);
+  } else {
+    setTimeout(onKeysReady, 1000, cb, args);
+  }
+}
 
 function checkIfKeypairExists(path = 'keys') {
   try {
