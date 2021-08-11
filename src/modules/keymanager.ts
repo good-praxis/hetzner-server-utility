@@ -1,18 +1,22 @@
 import fs from 'fs';
 import { generateRSAKeyPair } from './rsa';
 import { createFolderIfNotExists } from '../utils/fs';
-import { updateKey } from './hcloud/sshkeys';
 
-export const keys: { priv: string; pub: string } = {
+interface Keypair {
+  priv: string;
+  pub: string;
+}
+
+export const keypair: Keypair = {
   priv: undefined,
   pub: undefined
 };
 
-export function onKeysReady(cb: Function, args?: any) {
-  if (keys.priv && keys.pub) {
+export function onKeypairReady(cb: Function, args?: any) {
+  if (keypair.priv && keypair.pub) {
     cb(args);
   } else {
-    setTimeout(onKeysReady, 1000, cb, args);
+    setTimeout(onKeypairReady, 1000, (args = { cb, args }));
   }
 }
 
@@ -30,14 +34,14 @@ function generateKeypair() {
   generateRSAKeyPair(receiveKeypair);
 }
 
-function receiveKeypair(keys: { priv: string; pub: string }, path = 'keys') {
+function receiveKeypair({ priv, pub }: Keypair, path = 'keys') {
   try {
     createFolderIfNotExists(path);
     if (!fs.existsSync(`${path}/priv.pem`)) {
-      fs.writeFileSync(`${path}/priv.pem`, keys.priv);
+      fs.writeFileSync(`${path}/priv.pem`, priv);
     }
     if (!fs.existsSync(`${path}/pub.pem`)) {
-      fs.writeFileSync(`${path}/pub.pem`, keys.pub);
+      fs.writeFileSync(`${path}/pub.pem`, pub);
     }
   } catch (e) {
     console.log(e, 'Error generating keypair');
@@ -45,25 +49,16 @@ function receiveKeypair(keys: { priv: string; pub: string }, path = 'keys') {
 }
 
 function readKeypair(path = 'keys') {
-  if (!checkIfKeypairExists(path)) {
-    scheduleReadKeypair();
-    return;
-  }
-  keys.priv = fs.readFileSync(`${path}/priv.pem`).toString();
-  keys.pub = fs.readFileSync(`${path}/pub.pem`).toString();
-  console.log(`Using keypair with pub key \n ${keys.pub}`);
-}
-
-function scheduleReadKeypair() {
-  setTimeout(() => {
-    readKeypair();
-  }, 1000);
+  keypair.priv = fs.readFileSync(`${path}/priv.pem`).toString();
+  keypair.pub = fs.readFileSync(`${path}/pub.pem`).toString();
+  console.log(`Using keypair with pub key \n ${keypair.pub}`);
 }
 
 // Checks if keypair exists, generates if it doesn't
-export function initalizeKeys() {
+export function initalizeKeypair() {
   if (!checkIfKeypairExists()) {
     generateKeypair();
+  } else {
+    readKeypair();
   }
-  scheduleReadKeypair();
 }

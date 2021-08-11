@@ -1,8 +1,8 @@
-import { initalizeKeys, keys } from './modules/keymanager';
+import { initalizeKeypair, keypair } from './modules/keymanager';
 const Discord = require('discord.js');
 require('dotenv').config();
 
-initalizeKeys();
+initalizeKeypair();
 
 const discord = new Discord.Client();
 
