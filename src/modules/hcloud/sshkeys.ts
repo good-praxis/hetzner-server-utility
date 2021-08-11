@@ -63,3 +63,46 @@ export async function createKey(request_data: SSHKeysRequest) {
 
   throw new Error(`${status}: ${data}`);
 }
+
+/**
+ * Retrieves a single SSHKey by its name.
+ * When no name is given, the App's key is returned.
+ **/
+export async function getKeyByName(name: string = process.env.APP_NAME) {
+  const { status, data }: AxiosResponse<SSHKey> = await instance()
+    .get(`/ssh_keys?name=${name}`)
+    .catch((err) => {
+      if (err.response.status === 404) {
+        console.log(`No SSHKey for ${name} on Hetzner`);
+        return err.response;
+      }
+      throw err;
+    });
+  if (status === 200) {
+    return data;
+  }
+
+  throw new Error(`${status}: ${data}`);
+}
+
+export async function updateKey(request_data: SSHKeysRequest) {
+  const id = await getKeyByName(request_data.name).then((key) => key.id);
+
+  const { status, data }: AxiosResponse<SSHKey> = await instance()
+    .put(`/ssh_keys/${id}`, {
+      ...request_data,
+      public_key: parseKey(request_data.public_key, 'pem').toString('ssh')
+    })
+    .catch((err) => {
+      if (err.response.status === 404) {
+        console.log(`No SSHKey for ${request_data.name} on Hetzner`);
+        return err.response;
+      }
+      throw err;
+    });
+  if (status === 200) {
+    return;
+  }
+
+  throw new Error(`${status}: ${data}`);
+}

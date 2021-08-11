@@ -13,7 +13,7 @@ export interface SSHKey {
   created: string;
   fingerpringt: string;
   id: number;
-  labels: {};
+  labels: object;
   name: string;
   public_key: string;
 }
