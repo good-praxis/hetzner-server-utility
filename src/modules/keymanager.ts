@@ -16,7 +16,7 @@ export function onKeypairReady(cb: Function, args?: any) {
   if (keypair.priv && keypair.pub) {
     cb(args);
   } else {
-    setTimeout(onKeypairReady, 1000, (args = { cb, args }));
+    setTimeout(onKeypairReady, 1000, cb, args);
   }
 }
 
