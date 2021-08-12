@@ -72,13 +72,12 @@ export async function getKeyByName(name: string = process.env.APP_NAME) {
   const { status, data }: AxiosResponse<SSHKeysResponse> = await instance()
     .get(`/ssh_keys?name=${name}`)
     .catch((err) => {
-      if (err.response.status === 404) {
-        console.log(`No SSHKey for ${name} on Hetzner`);
-        return err.response;
-      }
       throw err;
     });
   if (status === 200) {
+    if (data.ssh_keys.length === 0) {
+      console.error(`No SSHKey found on Hetzner for ${name}`);
+    }
     return data.ssh_keys[0];
   }
 
