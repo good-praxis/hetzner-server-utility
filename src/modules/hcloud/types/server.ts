@@ -1,33 +1,4 @@
-export interface Meta {
-  pagination: {
-    page: number;
-    per_page: number;
-    previous_page: number | null;
-    next_page: number | null;
-    last_page: number | null;
-    total_entries: number | null;
-  };
-}
-
-export interface SSHKey {
-  created: string;
-  fingerpringt: string;
-  id: number;
-  labels: object;
-  name: string;
-  public_key: string;
-}
-
-export interface SSHKeysResponse {
-  meta: Meta;
-  ssh_keys: SSHKey[];
-}
-
-export interface SSHKeysRequest {
-  labels?: {};
-  name: string;
-  public_key: string;
-}
+import { Iso, Image } from './index';
 
 interface PublicIp {
   blocked: boolean;
@@ -110,53 +81,30 @@ interface Datacenter {
   server_types: ServerTypes;
 }
 
-interface Iso {
-  deprecated: string | null;
-  description: string | null;
-  id: number;
-  name: string | null;
-  type: 'public' | 'private';
-}
-
-enum IMAGE_TYPE {
-  system = 'system',
-  app = 'app',
-  snapshot = 'snapshot',
-  backup = 'backup',
-  temporary = 'temporary'
-}
-
-enum OS_FLAVOR {
-  ubuntu = 'ubuntu',
-  centos = 'centos',
-  debian = 'debian',
-  fedora = 'fedora',
-  unkown = 'unkown'
-}
-
-interface Image {
-  bound_to: number | null;
-  build_id: string | null;
-  created: string;
-  created_from: { id: number; name: string } | null;
-  deleted: string | null;
-  deprecated: string | null;
-  description: string;
-  disk_size: number;
-  id: number;
-  image_size: number | null;
-  labels: object | null;
-  name: string;
-  os_flavor: OS_FLAVOR;
-  os_type: string | null;
-  protection: { delete: boolean };
-  rapid_deploy: boolean;
-  status: 'available' | 'creating' | 'unavailable';
-  type: IMAGE_TYPE;
-}
-
 interface ServerTypes {
   available: number[];
   avaialble_from_migration: number[];
   supported: number[];
+}
+
+export interface ServerCreateRequest {
+  automount?: boolean;
+  datacenter?: string;
+  firewalls: number[];
+  labels: object;
+  location?: string;
+  name: string;
+  networks: number[];
+  server_type: string;
+  ssh_keys: number[];
+  start_after_create?: boolean;
+  user_data?: string;
+  volumes: number[];
+}
+
+interface ServerCreateResponse {
+  action: Action;
+  next_actions: Action[];
+  root_password: string | null;
+  server: Server;
 }
