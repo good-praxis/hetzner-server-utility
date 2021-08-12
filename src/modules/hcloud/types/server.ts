@@ -1,4 +1,4 @@
-import { Iso, Image } from './index';
+import { Datacenter, Iso, Image } from './index';
 
 interface PublicIp {
   blocked: boolean;
@@ -51,12 +51,12 @@ export interface Server {
   protection: { delete: boolean; rebuild: boolean };
   public_net: PublicNet;
   rescue_enabled: boolean;
-  server_type: ServerSpecs;
+  server_type: ServerType;
   status: SERVER_STATUS;
   volumes: number[];
 }
 
-interface ServerSpecs {
+interface ServerType {
   cores: number;
   cpu_type: 'shared' | 'dedicated';
   deprecated: boolean;
@@ -71,20 +71,6 @@ interface ServerSpecs {
     price_monthly: { gross: string; net: string };
   };
   storage_type: 'local' | 'network';
-}
-
-interface Datacenter {
-  desciption: string;
-  id: number;
-  location: Location;
-  name: string;
-  server_types: ServerTypes;
-}
-
-interface ServerTypes {
-  available: number[];
-  avaialble_from_migration: number[];
-  supported: number[];
 }
 
 export interface ServerCreateRequest {
@@ -102,9 +88,13 @@ export interface ServerCreateRequest {
   volumes: number[];
 }
 
-interface ServerCreateResponse {
+export interface ServerCreateResponse {
   action: Action;
   next_actions: Action[];
   root_password: string | null;
   server: Server;
+}
+
+export interface ServerTypesResponse {
+  server_types: ServerType[];
 }

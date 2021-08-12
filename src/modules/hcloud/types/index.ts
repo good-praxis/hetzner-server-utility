@@ -12,3 +12,4 @@ export interface Meta {
 export * from './sshkey';
 export * from './server';
 export * from './image';
+export * from './location';
