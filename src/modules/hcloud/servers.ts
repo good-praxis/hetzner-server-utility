@@ -1,11 +1,22 @@
 import {
   ServerCreateRequest,
   ServerCreateResponse,
-  ServerTypesResponse
+  ServerTypesResponse,
+  ServerResponse
 } from './types';
 import { instance } from './common';
 import { AxiosResponse } from 'axios';
 import { HttpStatus } from '../http_status';
+
+export async function getServers(page = 1) {
+  const { status, data }: AxiosResponse<ServerResponse> = await instance().get(
+    `/servers?page=${page}`
+  );
+  if (status === HttpStatus.OK) {
+    return data;
+  }
+  throw new Error(`${status}: ${data}`);
+}
 
 export async function createServer(request: ServerCreateRequest) {
   const { status, data }: AxiosResponse<ServerCreateResponse> = await instance()

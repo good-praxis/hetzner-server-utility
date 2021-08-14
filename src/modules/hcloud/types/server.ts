@@ -73,6 +73,11 @@ interface ServerType {
   storage_type: 'local' | 'network';
 }
 
+export interface ServersResponse {
+  servers: Server[];
+  meta: Meta;
+}
+
 export interface ServerCreateRequest {
   automount?: boolean;
   datacenter?: string;
