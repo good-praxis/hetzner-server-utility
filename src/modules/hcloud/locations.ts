@@ -1,11 +1,12 @@
 import { AxiosResponse } from 'axios';
+import { HttpStatus } from '../http_status';
 import { instance } from './common';
 import { LocationResponse } from './types';
 
 async function getLocations() {
   const { status, data }: AxiosResponse<LocationResponse> =
     await instance().get('/locations');
-  if (status === 200) {
+  if (status === HttpStatus.OK) {
     return data;
   }
 

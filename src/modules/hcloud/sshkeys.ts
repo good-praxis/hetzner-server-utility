@@ -1,42 +1,17 @@
 import { AxiosResponse } from 'axios';
 import { parseKey } from 'sshpk';
+import { HttpStatus } from '../http_status';
 import { instance } from './common';
 import { SSHKey, SSHKeysRequest, SSHKeysResponse } from './types';
 
-export async function getAllKeys() {
+export async function getKeys(page = 1) {
   const { status, data }: AxiosResponse<SSHKeysResponse> = await instance().get(
-    '/ssh_keys'
+    `/ssh_keys?page=${page}`
   );
-  if (status !== 200) {
-    throw new Error(`${status}: ${data}`);
+  if (status === HttpStatus.OK) {
+    return data;
   }
-  const {
-    ssh_keys,
-    meta: {
-      pagination: { next_page }
-    }
-  } = data;
-
-  let keys: SSHKey[] = [...ssh_keys];
-  async function getNextPage(page: number) {
-    const { status, data }: AxiosResponse<SSHKeysResponse> =
-      await instance().get('/ssh_keys', {
-        data: { meta: { pagination: { page: page } } }
-      });
-    if (status !== 200) {
-      throw new Error(`${status}: ${data}`);
-    }
-    keys = [...keys, ...data.ssh_keys];
-    if (data.meta.pagination.next_page) {
-      keys = [...keys, ...(await getNextPage(data.meta.pagination.next_page))];
-    }
-    return keys;
-  }
-  if (next_page) {
-    await getNextPage(next_page);
-  }
-
-  return keys;
+  throw new Error(`${status}: ${data}`);
 }
 
 export async function createKey(request_data: SSHKeysRequest) {
@@ -46,7 +21,7 @@ export async function createKey(request_data: SSHKeysRequest) {
       public_key: parseKey(request_data.public_key, 'pem').toString('ssh')
     })
     .catch((err) => {
-      if (err.response.status === 409) {
+      if (err.response.status === HttpStatus.Conflict) {
         console.log(
           `SSHKey of ${process.env.APP_NAME} already registered on Hetzner`
         );
@@ -54,12 +29,11 @@ export async function createKey(request_data: SSHKeysRequest) {
       }
       throw err;
     });
-  if (status === 201) {
+
+  if (status === HttpStatus.Created)
     console.log(`Created SSHKey for ${process.env.APP_NAME} on Hetzner`);
-    return;
-  } else if (status === 409) {
-    return;
-  }
+
+  if ([HttpStatus.Conflict, HttpStatus.Created].includes(status)) return;
 
   throw new Error(`${status}: ${data}`);
 }
@@ -74,7 +48,7 @@ export async function getKeyByName(name: string = process.env.APP_NAME) {
     .catch((err) => {
       throw err;
     });
-  if (status === 200) {
+  if (status === HttpStatus.OK) {
     if (data.ssh_keys.length === 0) {
       console.error(`No SSHKey found on Hetzner for ${name}`);
     }
@@ -93,13 +67,13 @@ export async function updateKey(request_data: SSHKeysRequest) {
       public_key: parseKey(request_data.public_key, 'pem').toString('ssh')
     })
     .catch((err) => {
-      if (err.response.status === 404) {
+      if (err.response.status === HttpStatus.NotFound) {
         console.log(`No SSHKey for ${request_data.name} on Hetzner`);
         return err.response;
       }
       throw err;
     });
-  if (status === 200) {
+  if (status === HttpStatus.OK) {
     return;
   }
 

@@ -11,7 +11,7 @@ export async function getServerTypes(page: number = 1) {
       throw (err.response.data, err.response.status);
     });
 
-  if (status === 200) {
+  if (status === HttpStatus.OK) {
     return data;
   }
   throw new Error(`${status}: ${data.toString()}`);
