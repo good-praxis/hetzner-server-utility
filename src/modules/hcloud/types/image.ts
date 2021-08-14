@@ -1,3 +1,5 @@
+import { Meta } from '.';
+
 export interface Iso {
   deprecated: string | null;
   description: string | null;
@@ -37,8 +39,14 @@ export interface Image {
   name: string;
   os_flavor: OS_FLAVOR;
   os_type: string | null;
+  os_version: string | null;
   protection: { delete: boolean };
   rapid_deploy: boolean;
   status: 'available' | 'creating' | 'unavailable';
   type: IMAGE_TYPE;
+}
+
+export interface ImageResponse {
+  images: Image[];
+  meta: Meta;
 }
