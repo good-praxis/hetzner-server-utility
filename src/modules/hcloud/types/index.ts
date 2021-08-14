@@ -13,3 +13,4 @@ export * from './sshkey';
 export * from './server';
 export * from './image';
 export * from './location';
+export * from './action';

@@ -1,3 +1,5 @@
+import { Image } from './image';
+
 interface ActionError {
   code: string;
   message: string;
@@ -8,7 +10,7 @@ interface ActionResource {
   type: string;
 }
 
-interface Action {
+export interface Action {
   command: string;
   error: ActionError | null;
   finished: string | null;
@@ -17,4 +19,15 @@ interface Action {
   resources: ActionResource[];
   started: string;
   status: 'success' | 'running' | 'error';
+}
+
+export interface CreateImageFromServerActionRequest {
+  description?: string;
+  labels?: object;
+  type?: 'snapshot' | 'backup';
+}
+
+export interface CreateImageFromServerActionResponse {
+  action: Action;
+  image: Image;
 }

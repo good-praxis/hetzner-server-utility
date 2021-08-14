@@ -1,4 +1,4 @@
-import { Datacenter, Iso, Image, Meta } from './index';
+import { Datacenter, Iso, Image, Meta, Action } from './index';
 
 interface PublicIp {
   blocked: boolean;
@@ -73,7 +73,7 @@ interface ServerType {
   storage_type: 'local' | 'network';
 }
 
-export interface ServersResponse {
+export interface ServerResponse {
   servers: Server[];
   meta: Meta;
 }

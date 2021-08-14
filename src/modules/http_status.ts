@@ -14,6 +14,7 @@ export enum HttpStatus {
   PreconditionFailed = 412,
   RequestEntityTooLarge = 413,
   UnsupportedMediaType = 415,
+  Locked = 423,
   InternalServerError = 500,
   NotImplemented = 501,
   ServiceUnavailable = 503,
