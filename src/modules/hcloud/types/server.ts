@@ -77,6 +77,7 @@ export interface ServerCreateRequest {
   automount?: boolean;
   datacenter?: string;
   firewalls: number[];
+  image: string;
   labels: object;
   location?: string;
   name: string;

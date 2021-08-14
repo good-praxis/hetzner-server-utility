@@ -1,8 +1,29 @@
 import {
+  ServerCreateRequest,
+  ServerCreateResponse,
   ServerTypesResponse
 } from './types';
 import { instance } from './common';
 import { AxiosResponse } from 'axios';
+import { HttpStatus } from '../http_status';
+
+export async function createServer(request: ServerCreateRequest) {
+  const { status, data }: AxiosResponse<ServerCreateResponse> = await instance()
+    .post('/servers', request)
+    .catch((err) => {
+      if (err.response.status === HttpStatus.Conflict) {
+        console.error(
+          `Server creation failed: ${err.response.data.error.message}`
+        );
+        return err.response;
+      }
+      throw new Error(`${err}: ${err.response.data}`);
+    });
+  if (status !== HttpStatus.Created && status !== HttpStatus.Conflict) {
+    console.error(status, data);
+  }
+  return data;
+}
 
 export async function getServerTypes(page: number = 1) {
   const { status, data }: AxiosResponse<ServerTypesResponse> = await instance()
